@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>IA con criterio · Cátedra</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  :root{
+    --ink:#11131a;
+    --paper:#fbfbf9;
+    --card:#ffffff;
+    --muted:#5b6072;
+    --line:#e7e6e1;
+    --grape:#6c4cf1;
+    --grape-d:#4b2fd0;
+    --coral:#ff5d73;
+    --amber:#ffb020;
+    --teal:#16b8a6;
+    --sky:#2e8bff;
+    --ink-soft:#1c2030;
+    --display:"Space Grotesk","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Space Grotesk","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"JetBrains Mono","SFMono-Regular",ui-monospace,"Cascadia Code",Menlo,Consolas,monospace;
+    --maxw:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow:hidden}
+  .app{display:flex;height:100vh;height:100dvh;width:100vw}
+  .nav{width:286px;flex:0 0 286px;border-right:1px solid var(--line);background:#fff;display:flex;flex-direction:column;padding:24px 0;transition:transform .28s ease;z-index:40;position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);box-shadow:0 0 60px -20px rgba(20,20,40,.3)}
+  .nav.open{transform:none}
+  .nav .brand{padding:0 24px 20px;border-bottom:1px solid var(--line);margin-bottom:12px}
+  .nav .brand .mark{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--grape);text-transform:uppercase;font-weight:600}
+  .nav .brand h1{font-family:var(--display);font-size:19px;line-height:1.16;font-weight:600;margin-top:8px;letter-spacing:-.02em}
+  .nav .seclist{list-style:none;overflow-y:auto;flex:1;padding:2px 0}
+  .nav .seclist li{margin:1px 12px}
+  .nav .seclist button{width:100%;text-align:left;border:0;background:none;cursor:pointer;font-family:var(--sans);font-size:13px;color:var(--muted);padding:9px 13px;border-radius:9px;display:flex;gap:11px;align-items:center;transition:background .15s,color .15s;line-height:1.25}
+  .nav .seclist button:hover{background:#f4f3fb;color:var(--ink)}
+  .nav .seclist button .nm{font-family:var(--mono);font-size:10.5px;color:var(--grape);font-weight:600;flex:0 0 18px}
+  .nav .seclist li.active button{background:var(--ink);color:#fff}
+  .nav .seclist li.active button .nm{color:#9aa0c4}
+  .nav .foot{padding:14px 24px 0;border-top:1px solid var(--line);margin-top:8px}
+  .nav .foot .who{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .nav .foot .role{font-size:11px;color:var(--muted);line-height:1.45;margin-top:3px}
+  .stage{flex:1;position:relative;overflow:hidden}
+  .slides{height:100%;width:100%}
+  .slide{position:absolute;inset:0;padding:58px 70px 92px 78px;overflow-y:auto;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .34s ease,transform .34s ease,visibility .34s;display:flex;flex-direction:column;justify-content:center}
+  .slide.show{opacity:1;visibility:visible;transform:none}
+  .slide .inner{max-width:var(--maxw);width:100%;margin:0 auto}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--grape);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:11px}
+  .kicker::before{content:"";width:24px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--grape),var(--coral));display:inline-block}
+  .kicker.coral{color:var(--coral)} .kicker.coral::before{background:linear-gradient(90deg,var(--coral),var(--amber))}
+  .kicker.teal{color:var(--teal)} .kicker.teal::before{background:linear-gradient(90deg,var(--teal),var(--sky))}
+  .kicker.amber{color:#c8810a} .kicker.amber::before{background:linear-gradient(90deg,var(--amber),var(--coral))}
+  h2.title{font-family:var(--display);font-weight:600;letter-spacing:-.03em;line-height:1.04;font-size:clamp(28px,4.1vw,50px)}
+  .lead{font-size:clamp(15px,1.45vw,18px);color:var(--muted);line-height:1.55;max-width:740px;margin-top:13px}
+  .cover-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center;height:100%}
+  .cover .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--grape);font-weight:600;margin-bottom:20px}
+  .cover .big{font-family:var(--display);font-weight:700;letter-spacing:-.04em;line-height:.98;font-size:clamp(38px,5.6vw,74px)}
+  .cover .big .hl-ia{background:linear-gradient(120deg,var(--grape),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .big .dot-end{color:var(--coral)}
+  .cover-solo .ia-read{margin-top:18px;font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+  .cover-solo .ia-read span{color:var(--grape);font-weight:600}
+  .cover .big .hl{background:linear-gradient(120deg,var(--grape),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .sub{margin-top:22px;font-size:clamp(15px,1.5vw,20px);color:var(--muted);max-width:560px;line-height:1.5}
+  .cover .by{margin-top:34px;display:flex;align-items:center;gap:14px}
+  .cover .by .av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--grape),var(--coral));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--display);font-size:22px;font-weight:600;flex:0 0 52px}
+  .cover .by .who b{font-size:15px;display:block}
+  .cover .by .who span{font-size:12.5px;color:var(--muted)}
+  .cover .art{display:flex;align-items:center;justify-content:center}
+  .cover .art svg{width:100%;height:auto;max-height:74vh;filter:drop-shadow(0 24px 50px rgba(108,76,241,.22))}
+  .cover-solo{max-width:880px;margin:0 auto}
+  .cover-solo .by-solo{margin-top:38px;padding-top:22px;border-top:1px solid var(--line);max-width:560px}
+  .cover-solo .by-solo b{font-family:var(--display);font-size:17px;font-weight:600;display:block;letter-spacing:-.01em}
+  .cover-solo .by-solo span{font-size:13.5px;color:var(--muted)}
+  .grid{display:grid;gap:16px;margin-top:26px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .card{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--card);transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden}
+  .card:hover{transform:translateY(-3px);box-shadow:0 16px 38px -22px rgba(20,20,40,.4)}
+  .card .ci{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .card h3{font-family:var(--display);font-weight:600;font-size:19px;margin:8px 0 8px;letter-spacing:-.02em}
+  .card p{font-size:13px;color:var(--muted);line-height:1.55}
+  .card .topbar{position:absolute;top:0;left:0;right:0;height:5px}
+  .card.c-grape .topbar{background:var(--grape)} .card.c-coral .topbar{background:var(--coral)}
+  .card.c-teal .topbar{background:var(--teal)} .card.c-amber .topbar{background:var(--amber)} .card.c-sky .topbar{background:var(--sky)}
+  .card.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+  .card.dark h3{color:#fff}.card.dark p{color:#b7bace}.card.dark .ci{color:#8a8ea8}
+  .steprow{display:flex;gap:20px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line)}
+  .steprow:last-child{border-bottom:0}
+  .steprow .sn{font-family:var(--display);font-size:16px;font-weight:600;color:#fff;flex:0 0 42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--grape),var(--grape-d))}
+  .steprow.s2 .sn{background:linear-gradient(135deg,var(--coral),#e23a55)}
+  .steprow.s3 .sn{background:linear-gradient(135deg,var(--teal),#0e8f80)}
+  .steprow.s4 .sn{background:linear-gradient(135deg,var(--amber),#e09000)}
+  .steprow .sc h3{font-family:var(--display);font-size:19px;font-weight:600;margin-bottom:4px;letter-spacing:-.02em}
+  .steprow .sc p{font-size:13.5px;color:var(--muted);line-height:1.55;max-width:800px}
+  .steprow .sc .meta{font-family:var(--mono);font-size:11px;color:var(--grape);margin-top:6px;letter-spacing:.02em}
+  .promptbox{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:22px;font-family:var(--mono);font-size:13px;line-height:1.7;box-shadow:0 14px 36px -26px rgba(20,20,40,.5)}
+  .promptbox .ph{background:var(--ink);padding:10px 16px;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#b7bace;display:flex;align-items:center;gap:8px}
+  .promptbox .ph .dots{display:flex;gap:5px}.promptbox .ph .dots i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .promptbox .ph .dots i:nth-child(1){background:var(--coral)}.promptbox .ph .dots i:nth-child(2){background:var(--amber)}.promptbox .ph .dots i:nth-child(3){background:var(--teal)}
+  .promptbox .pb{padding:18px 20px;background:#fff}
+  .promptbox .pb .seg{display:block;padding:3px 0}
+  .promptbox .pb .tag{color:#fff;padding:1px 8px;border-radius:6px;font-size:11px;letter-spacing:.03em;font-weight:600}
+  .tag.t1{background:var(--grape)}.tag.t2{background:var(--sky)}.tag.t3{background:var(--teal)}.tag.t4{background:var(--amber)}.tag.t5{background:var(--coral)}
+  .promptbox .pb b{color:var(--ink)}
+  .poll{margin-top:22px;border:2px dashed var(--grape);border-radius:18px;padding:24px 26px;background:linear-gradient(135deg,#f6f3ff,#fff5f6)}
+  .poll .q{font-family:var(--display);font-size:clamp(20px,2.4vw,29px);font-weight:600;line-height:1.18;letter-spacing:-.02em;margin-bottom:6px}
+  .poll .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .poll .opts{display:grid;gap:11px}
+  .poll.two .opts{grid-template-columns:1fr 1fr}
+  .poll .opt{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:14px 16px;cursor:pointer;text-align:left;font-family:var(--sans);font-size:14.5px;color:var(--ink);transition:all .16s;position:relative;display:flex;align-items:center;gap:12px}
+  .poll .opt .key{width:26px;height:26px;border-radius:8px;background:#f0eefb;color:var(--grape);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 26px}
+  .poll .opt:hover{border-color:var(--grape);transform:translateY(-2px);box-shadow:0 10px 24px -16px rgba(108,76,241,.6)}
+  .poll .opt.sel{border-color:var(--grape);background:#f3f0ff}
+  .poll .opt.sel .key{background:var(--grape);color:#fff}
+  .poll .opt .bar{position:absolute;left:0;top:0;bottom:0;background:rgba(108,76,241,.10);border-radius:13px;width:0;transition:width .5s ease;z-index:0}
+  .poll .opt .lbl,.poll .opt .key,.poll .opt .pct{position:relative;z-index:1}
+  .poll .opt .pct{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--grape);font-weight:600;opacity:0;transition:opacity .3s}
+  .poll.revealed .opt .pct{opacity:1}
+  .poll .react{margin-top:14px;font-size:13.5px;color:var(--ink);background:#fff;border-radius:11px;padding:12px 15px;border-left:4px solid var(--grape);display:none;line-height:1.5}
+  .poll.revealed .react{display:block}
+  .res{border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;background:#fff;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+  .res:hover{transform:translateY(-3px);box-shadow:0 16px 36px -24px rgba(20,20,40,.45)}
+  .res .rtop{height:4px;position:absolute;top:0;left:0;right:0}
+  .res.r1 .rtop{background:var(--grape)}.res.r2 .rtop{background:var(--coral)}.res.r3 .rtop{background:var(--teal)}.res.r4 .rtop{background:var(--sky)}.res.r5 .rtop{background:var(--amber)}.res.r6 .rtop{background:var(--grape-d)}
+  .res .rh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+  .res .rh h3{font-family:var(--display);font-size:18px;font-weight:600;letter-spacing:-.02em}
+  .res .price{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap;font-weight:600}
+  .res .price.free{background:var(--teal);color:#fff}
+  .res .price.freemium{background:#fff3e0;color:#c8810a;border:1px solid #ffd99a}
+  .res .price.paid{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+  .res .desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin:8px 0 11px}
+  .res ul{list-style:none;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:4px}
+  .res ul li{padding-left:18px;position:relative;color:var(--muted)}
+  .res ul li.yes::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:700}
+  .res ul li.no::before{content:"✕";position:absolute;left:0;color:var(--coral);font-weight:700}
+  .res .use{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.4;border-top:1px solid var(--line);padding-top:9px}
+  .res a.link{margin-top:11px;font-family:var(--mono);font-size:11.5px;color:var(--grape);text-decoration:none;font-weight:600;align-self:flex-start;border-bottom:1.5px solid transparent;transition:border-color .15s}
+  .res a.link:hover{border-color:var(--grape)}
+  .res a.link::after{content:" ↗"}
+  .case{border:1px solid var(--line);border-radius:16px;padding:24px;background:#fff;position:relative;overflow:hidden}
+  .case .ribbon{position:absolute;top:14px;right:-34px;background:var(--coral);color:#fff;font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:4px 40px;transform:rotate(45deg);font-weight:600}
+  .case .ct{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);font-weight:600}
+  .case h3{font-family:var(--display);font-size:21px;font-weight:600;margin:7px 0 9px;line-height:1.15;letter-spacing:-.02em}
+  .case p{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .case .lesson{margin-top:13px;padding:13px 15px;background:linear-gradient(135deg,var(--ink),var(--ink-soft));color:#fff;border-radius:12px;font-size:12.5px;line-height:1.5}
+  .case .lesson b{color:#ffd99a}
+  .case a.src{display:inline-block;margin-top:13px;font-family:var(--mono);font-size:11.5px;color:var(--grape);text-decoration:none;font-weight:600;border-bottom:1.5px solid transparent}
+  .case a.src:hover{border-color:var(--grape)}
+  .case a.src::after{content:" ↗"}
+  .check{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:11px 30px}
+  .check .ci2{padding:14px 16px;border-radius:13px;background:#fff;border:1px solid var(--line);transition:transform .15s,box-shadow .15s;border-left:4px solid var(--grape)}
+  .check .ci2:nth-child(2){border-left-color:var(--coral)}
+  .check .ci2:nth-child(3){border-left-color:var(--teal)}
+  .check .ci2:nth-child(4){border-left-color:var(--sky)}
+  .check .ci2:nth-child(5){border-left-color:var(--amber)}
+  .check .ci2:nth-child(6){border-left-color:var(--grape-d)}
+  .check .ci2:hover{transform:translateY(-2px);box-shadow:0 12px 26px -20px rgba(20,20,40,.4)}
+  .check .ci2 h4{font-family:var(--display);font-size:14.5px;font-weight:600;margin-bottom:3px;letter-spacing:-.01em}
+  .check .ci2 p{font-size:12px;color:var(--muted);line-height:1.45}
+  .closing .pull{font-family:var(--display);font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.06;letter-spacing:-.035em;max-width:940px}
+  .banner{margin-top:22px;border-radius:14px;padding:16px 20px;background:linear-gradient(135deg,#f6f3ff,#fff5f6);border:1px solid #ece7ff;font-size:14px;color:var(--ink);line-height:1.55}
+  .banner b{color:var(--grape-d)}
+  .apa{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .apa-h{background:var(--ink);color:#fff;font-family:var(--display);font-weight:600;font-size:14px;padding:11px 18px;letter-spacing:-.01em}
+  .apa-row{display:flex;gap:14px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--line)}
+  .apa-tag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--grape);padding:3px 9px;border-radius:20px;font-weight:600;flex:0 0 auto;margin-top:2px}
+  .apa-row code{font-family:var(--mono);font-size:12.5px;color:var(--ink);line-height:1.6}
+  .apa-row code i{color:var(--grape-d);font-style:italic}
+  .apa-note{padding:11px 18px;font-size:12px;color:var(--muted);line-height:1.5}
+  .apa-note a{color:var(--grape);font-weight:600;text-decoration:none}
+  .apa-note a:hover{text-decoration:underline}
+  .closing .pull .hl{background:linear-gradient(120deg,var(--grape),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .closing .pull em{font-style:italic}
+  .closing .sub{margin-top:22px;font-size:17px;color:var(--muted);line-height:1.55;max-width:660px}
+  .closing .q{margin-top:30px;padding:16px 20px;border-radius:14px;background:linear-gradient(135deg,#f6f3ff,#fff5f6);font-family:var(--sans);font-size:15px;color:var(--ink);font-weight:600}
+  .tagline{font-family:var(--mono);font-size:11.5px;color:var(--grape);margin-top:13px;letter-spacing:.03em;font-weight:600}
+  .ctrl{position:absolute;bottom:0;left:0;right:0;height:60px;border-top:1px solid var(--line);background:rgba(251,251,249,.9);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:30}
+  .ctrl .pg{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .ctrl .pg b{color:var(--grape)}
+  .ctrl .btns{display:flex;gap:8px}
+  .ctrl button{font-family:var(--sans);font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 16px;border-radius:10px;cursor:pointer;transition:all .15s;font-weight:500}
+  .ctrl button:hover:not(:disabled){background:var(--grape);color:#fff;border-color:var(--grape)}
+  .ctrl button:disabled{opacity:.35;cursor:not-allowed}
+  .progress{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--grape),var(--coral));transition:width .34s ease;z-index:31}
+  .menutoggle{display:flex;align-items:center;justify-content:center;position:absolute;top:14px;left:18px;z-index:50;border:1px solid var(--line);background:#fff;border-radius:10px;width:44px;height:44px;cursor:pointer;font-size:19px;color:var(--ink);box-shadow:0 6px 18px -10px rgba(20,20,40,.35);transition:background .15s,color .15s}
+  .menutoggle:hover{background:var(--ink);color:#fff}
+  .scrim{display:none}
+  .scrim.open{display:block;position:fixed;inset:0;background:rgba(15,15,25,.4);z-index:35}
+  .hint-nav{position:absolute;top:16px;right:22px;font-family:var(--mono);font-size:10.5px;color:#c3c2bc;z-index:20}
+  .slide::-webkit-scrollbar,.nav .seclist::-webkit-scrollbar{width:8px}
+  .slide::-webkit-scrollbar-thumb,.nav .seclist::-webkit-scrollbar-thumb{background:#dcdbd5;border-radius:8px}
+  @media (max-width:920px){
+    .slide{padding:74px 22px 86px}
+    .cover-wrap{grid-template-columns:1fr;gap:24px}
+    .cover .art{display:none}
+    .g2,.g3,.g4{grid-template-columns:1fr}
+    .poll.two .opts,.check{grid-template-columns:1fr}
+    .hint-nav{display:none}
+  }
+  @media (max-width:920px) and (min-width:560px){ .g4,.g3{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="app">
+  <button class="menutoggle" id="menutoggle">≡</button>
+  <div class="scrim" id="scrim"></div>
+  <aside class="nav" id="nav">
+    <div class="brand">
+      <div class="mark">Cátedra IA</div>
+      <h1>Investigación Aumentada</h1>
+    </div>
+    <ul class="seclist" id="seclist"></ul>
+    <div class="foot">
+      <div class="who">Felix Enrique Parra Jiménez</div>
+      <div class="role">Diseñador Gráfico · Especialista en Diseño y Creación con IA</div>
+    </div>
+  </aside>
+  <main class="stage">
+    <div class="progress" id="progress"></div>
+    <div class="hint-nav">← → para navegar</div>
+    <div class="slides" id="slides"></div>
+    <div class="ctrl">
+      <div class="pg">Sección <b id="cur">01</b> <span id="curt"></span></div>
+      <div class="btns">
+        <button id="prev">← Atrás</button>
+        <button id="next">Siguiente →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+
+const slides = [
+  { nav:"Inicio",
+    html:`<div class="inner cover cover-solo">
+      <div class="eyebrow">Cátedra · Ética + IA</div>
+      <div class="big"><span class="hl-ia">I</span>nvestigación<br><span class="hl-ia">A</span>umentada<span class="dot-end">.</span></div>
+      <div class="sub">Una guía para integrar la inteligencia artificial en la investigación universitaria con ética y criterio.</div>
+      <div class="by-solo">
+        <b>Felix Enrique Parra Jiménez</b>
+        <span>Diseñador Gráfico · Especialista en Diseño y Creación con IA</span>
+      </div>
+      <div class="tagline">Universidad Santo Tomás · Dirección de Comunicaciones</div>
+    </div>`
+  },
+  { nav:"Quién soy",
+    html:`<div class="inner">
+      <div class="kicker">Presentación</div>
+      <h2 class="title">Hola, soy Felix</h2>
+      <p class="lead">No vengo a decirte si la IA es buena o mala. Vengo a mostrarte, desde mi práctica diaria, cómo se usa sin que haga el trabajo por ti.</p>
+      <div class="grid g3">
+        <div class="card c-grape"><div class="topbar"></div><div class="ci">Desde dónde hablo</div><h3>Diseño + IA</h3><p>Diseñador Gráfico de la Universidad Santo Tomás y Especialista en Diseño y Creación con IA. Estas herramientas son mi día a día.</p></div>
+        <div class="card c-coral"><div class="topbar"></div><div class="ci">Qué propongo</div><h3>Un buen compañero de equipo</h3><p>La IA es como un compañero brillante pero distraído: propone, se equivoca y necesita que tú dirijas. La pregunta no es “¿la uso?”, sino “¿para qué y declarando qué?”.</p></div>
+        <div class="card c-teal"><div class="topbar"></div><div class="ci">La única regla</div><h3>Poder explicarlo</h3><p>Ética aquí no es una lista de prohibiciones. Es poder defender cada decisión: por qué la usé y qué puse yo de mi cosecha.</p></div>
+      </div>
+    </div>`
+  },
+  { nav:"Calentamiento",
+    poll:{multi:false,two:true,react:`Dato real: en la encuesta HEPI/Kortext 2025 (Reino Unido, 1.041 estudiantes), el <b>92% ya usa herramientas de IA</b> en sus estudios y el <b>88% la ha usado para evaluaciones</b>, frente al 53% un año antes. El punto de hoy no es “sí o no”, es <b>“¿cómo lo hago bien?”</b>. <a href="https://www.hepi.ac.uk/reports/student-generative-ai-survey-2025/" target="_blank" rel="noopener" style="color:var(--grape);font-weight:600">Ver la fuente (HEPI 2025)</a>`,data:[88,12]},
+    html:`<div class="inner">
+      <div class="kicker coral">Calentemos motores</div>
+      <h2 class="title">Seamos sinceros un momento</h2>
+      <p class="lead">Antes de empezar, una pregunta rápida. Vota mentalmente (o en voz alta) y después comparamos con un dato real.</p>
+      <div class="poll two" data-poll>
+        <div class="q">¿Has usado IA para un trabajo de la universidad?</div>
+        <div class="hint">Toca tu respuesta y revelamos la cifra real de los estudios recientes.</div>
+        <div class="opts">
+          <button class="opt" data-i="0"><span class="key">A</span><span class="lbl">Sí, claro</span><span class="pct"></span></button>
+          <button class="opt" data-i="1"><span class="key">B</span><span class="lbl">Todavía no</span><span class="pct"></span></button>
+        </div>
+        <div class="react"></div>
+      </div>
+    </div>`
+  },
+  { nav:"El método",
+    html:`<div class="inner">
+      <div class="kicker teal">El recorrido</div>
+      <h2 class="title">6 pasos para investigar<br>como profesional</h2>
+      <p class="lead">No es “preguntarle a un chatbot y copiar”. Es un proceso donde la IA acelera y tú llevas el timón en cada curva.</p>
+      <div class="grid g3" style="margin-top:22px">
+        <div class="card c-grape"><div class="topbar"></div><div class="ci">Pasos 1 y 2</div><h3>Contexto y herramientas</h3><p>Define el contexto de tu investigación y escoge qué IA sirve para cada tarea.</p></div>
+        <div class="card c-coral"><div class="topbar"></div><div class="ci">Pasos 3 y 4</div><h3>Pedir e intervenir</h3><p>Construye buenos prompts y, sobre todo, verifica, contrasta y edita como humano.</p></div>
+        <div class="card c-amber"><div class="topbar"></div><div class="ci">Pasos 5 y 6</div><h3>Usar ético y cerrar</h3><p>Declara el uso, cita bien y entrega con autoría y trazabilidad propias.</p></div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 1 · Contexto",
+    html:`<div class="inner">
+      <div class="kicker">Paso 1 · Define el contexto</div>
+      <h2 class="title">Primero el contexto,<br>después la IA</h2>
+      <p class="lead">No se trata solo de tener una pregunta. Se trata de darle a la IA el contexto completo de tu investigación: de qué va, para quién, con qué reglas. Eso es 100% humano y no se delega.</p>
+      <div style="margin-top:14px">
+        <div class="steprow"><div class="sn">a</div><div class="sc"><h3>Sitúa tu investigación</h3><p>Tema, disciplina, nivel (pregrado, tesis), el problema que abordas y por qué importa. La IA no adivina tu intención: tú se la das.</p></div></div>
+        <div class="steprow s2"><div class="sn">b</div><div class="sc"><h3>Decide qué necesitas en cada fase</h3><p>Mapear el campo, antecedentes, definiciones, contraste de posturas, datos. Cada necesidad usa una herramienta distinta, no todo es para el mismo chatbot.</p></div></div>
+        <div class="steprow s3"><div class="sn">c</div><div class="sc"><h3>Fija tus criterios de calidad</h3><p>Qué fuentes aceptas (revisadas por pares, oficiales), idioma y normas de citación. La IA se ajusta a tu estándar, no al revés.</p><div class="meta">Regla de oro: si no puedes explicar por qué algo entra en tu trabajo, no entra.</div></div></div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 2 · Qué IA",
+    html:`<div class="inner">
+      <div class="kicker">Paso 2 · Elegir la herramienta</div>
+      <h2 class="title">Qué IA usar para qué</h2>
+      <p class="lead">No existe “la IA” para todo. Hay buscadores académicos, mapeadores de literatura y modelos de razonamiento. Mezclarlos es lo profesional.</p>
+      <div class="grid g4" style="margin-top:20px">
+        <div class="card c-grape"><div class="topbar"></div><div class="ci">Buscar evidencia</div><h3>Académicas</h3><p>Consensus, Elicit, Semantic Scholar: responden con base en papers reales y enlazan la fuente.</p></div>
+        <div class="card c-teal"><div class="topbar"></div><div class="ci">Mapear el campo</div><h3>Literatura</h3><p>Connected Papers y Research Rabbit muestran cómo se conectan los estudios de un tema.</p></div>
+        <div class="card c-sky"><div class="topbar"></div><div class="ci">Razonar y redactar</div><h3>Modelos LLM</h3><p>Claude, ChatGPT, Gemini: estructuran, resumen, dan contraargumentos. <b>No son fuentes.</b></p></div>
+        <div class="card dark"><div class="topbar" style="background:var(--amber)"></div><div class="ci">Regla de oro</div><h3>Separa funciones</h3><p>Busca evidencia donde hay evidencia. Usa el LLM para pensar y ordenar, nunca para “inventar” datos.</p></div>
+      </div>
+      <div class="banner"><b>Invierte en tu herramienta.</b> Si pagas Netflix y pagas Disney+, también vale la pena pagar una IA que te ayude en tu profesión. La versión de pago suele dar mejores modelos, más límite y funciones serias de investigación: es una inversión en tu formación, no un gasto.</div>
+    </div>`
+  },
+  { nav:"Paso 3 · El prompt",
+    html:`<div class="inner">
+      <div class="kicker">Paso 3 · El prompt</div>
+      <h2 class="title">Un buen prompt<br>tiene anatomía</h2>
+      <p class="lead">Pedir bien es la mitad del resultado. Un prompt pro declara rol, contexto, tarea, formato y límites, y exige que la IA cite o reconozca lo que no sabe.</p>
+      <div class="promptbox">
+        <div class="ph"><span class="dots"><i></i><i></i><i></i></span> Ejemplo · prompt para un estado del arte</div>
+        <div class="pb">
+          <span class="seg"><span class="tag t1">Rol</span> <b>Actúa como asistente de investigación en diseño.</b></span>
+          <span class="seg"><span class="tag t2">Contexto</span> Investigo la autoría en diseño editorial asistido por IA, nivel universitario, normas APA 7.</span>
+          <span class="seg"><span class="tag t3">Tarea</span> Identifica 5 debates abiertos sobre el tema en literatura 2022–2026.</span>
+          <span class="seg"><span class="tag t4">Formato</span> Tabla: debate · postura A · postura B · autor representativo.</span>
+          <span class="seg"><span class="tag t5">Límite</span> Si no tienes una fuente real, dilo. No inventes citas ni DOI.</span>
+        </div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 4 · Intervenir",
+    html:`<div class="inner">
+      <div class="kicker">Paso 4 · Intervención humana</div>
+      <h2 class="title">Aquí es donde<br>tú haces el trabajo</h2>
+      <p class="lead">La salida de la IA es un borrador, nunca un resultado. Tu intervención es lo que convierte una respuesta de chatbot en investigación.</p>
+      <div style="margin-top:12px">
+        <div class="steprow"><div class="sn">1</div><div class="sc"><h3>Verifica cada dato en la fuente original</h3><p>Abre el paper, el informe, la ley. Nunca cites lo que no leíste. La IA <b>alucina</b>: inventa referencias con apariencia perfecta.</p></div></div>
+        <div class="steprow s2"><div class="sn">2</div><div class="sc"><h3>Cruza al menos tres fuentes</h3><p>Si coinciden, ganas confianza. Si no, ahí hay un debate que tu trabajo debe discutir, y eso es justo lo valioso.</p></div></div>
+        <div class="steprow s3"><div class="sn">3</div><div class="sc"><h3>Reescribe con tu voz y tu argumento</h3><p>El hilo conductor es tuyo. La IA resume y ordena; tú interpretas, conectas y tomas posición.</p></div></div>
+        <div class="steprow s4"><div class="sn">4</div><div class="sc"><h3>Si no lo entiendes, no lo usas</h3><p>Texto que no puedes explicar ante un jurado es texto prestado. El criterio no se delega.</p></div></div>
+      </div>
+    </div>`
+  },
+  { nav:"Caso · Borrado",
+    html:`<div class="inner">
+      <div class="kicker coral">Historia real · abril 2026</div>
+      <h2 class="title">Cuando delegas<br>sin criterio</h2>
+      <p class="lead">No es para asustar, es para entender por qué existen los pasos 1 a 4: la IA actúa con la autonomía que le demos, y a veces la embarra.</p>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="case">
+          <div class="ribbon">9 SEG</div>
+          <div class="ct">PocketOS · Claude Opus 4.6 (vía Cursor)</div>
+          <h3>Borró una base de datos en 9 segundos</h3>
+          <p>Un agente de IA, en una tarea rutinaria, decidió “por su cuenta” resolver un error eliminando un volumen completo en Railway (con la base de datos de producción y sus respaldos) en una sola orden. Buscó el token de acceso en un archivo que nada tenía que ver con la tarea.</p>
+          <div class="lesson"><b>Para tu investigación:</b> el problema no fue “maldad” de la máquina, sino delegar sin límites ni verificación. La autonomía sin supervisión es el riesgo.</div>
+          <a class="src" href="https://www.livescience.com/technology/artificial-intelligence/i-violated-every-principle-i-was-given-ai-agent-deletes-companys-entire-database-in-9-seconds-then-confesses" target="_blank" rel="noopener">Leer la noticia · Live Science</a>
+        </div>
+        <div class="case">
+          <div class="ct">El patrón detrás del fallo</div>
+          <h3>“Usamos el mejor modelo del mercado”</h3>
+          <p>El fundador subrayó que corrían el modelo más capaz, con reglas de seguridad escritas en el proyecto. No bastó: una advertencia dentro de un prompt no es un candado. Si el control vive solo en el texto, la IA puede ignorarlo.</p>
+          <div class="lesson"><b>Trasládalo a tu trabajo:</b> escribir “no inventes citas” ayuda, pero <b>no te exime de verificar</b>. El control real es tu revisión.</div>
+          <a class="src" href="https://www.tomshardware.com/tech-industry/artificial-intelligence/claude-powered-ai-coding-agent-deletes-entire-company-database-in-9-seconds-backups-zapped-after-cursor-tool-powered-by-anthropics-claude-goes-rogue" target="_blank" rel="noopener">Leer análisis · Tom's Hardware</a>
+        </div>
+      </div>
+    </div>`
+  },
+  { nav:"Caso · Fable 5",
+    html:`<div class="inner">
+      <div class="kicker coral">Historia real · junio 2026</div>
+      <h2 class="title">Ni sus creadores<br>lo entienden del todo</h2>
+      <p class="lead">El modelo más potente liberado al público trae también un límite de fondo: la opacidad.</p>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="case">
+          <div class="ct">Anthropic · Claude Fable 5 (arquitectura Mythos)</div>
+          <h3>Un razonamiento denso y difícil de leer</h3>
+          <p>Según la propia documentación de Anthropic, el razonamiento interno del modelo es más denso y difícil de interpretar que el de modelos previos: más jerga y lenguaje técnico abreviado. Cuando “piensa en voz alta”, incluso a su equipo le cuesta seguirlo.</p>
+          <div class="lesson"><b>Para tu investigación:</b> si no podemos auditar cómo llega una IA a una afirmación, la <b>transparencia y la verificación humana</b> dejan de ser opcionales.</div>
+          <a class="src" href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank" rel="noopener">Anuncio oficial · Anthropic</a>
+        </div>
+        <div class="case">
+          <div class="ct">Qué significa para ti</div>
+          <h3>“Caja negra” = exige trazabilidad</h3>
+          <p>No necesitas entender la arquitectura del modelo. Necesitas poder rastrear cada afirmación de tu trabajo hasta una fuente que sí puedas leer y citar. La IA propone el camino; la prueba la pones tú.</p>
+          <div class="lesson"><b>En la práctica:</b> toda idea clave debe tener una fuente verificable detrás. Si solo la respalda “me lo dijo la IA”, aún no es investigación.</div>
+          <a class="src" href="https://cryptobriefing.com/anthropic-fable-ai-jargon-dense-responses/" target="_blank" rel="noopener">Cobertura · Crypto Briefing</a>
+        </div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 5 · Ética y APA",
+    html:`<div class="inner">
+      <div class="kicker">Paso 5 · Uso ético y citación</div>
+      <h2 class="title">Usarla bien es<br>declararla bien</h2>
+      <p class="lead">La integridad académica no prohíbe la IA: exige transparencia. El fraude no es usarla, es ocultarla y hacer pasar lo ajeno por propio. Y cuando la uses, cítala según APA.</p>
+      <div class="check" style="margin-top:18px">
+        <div class="ci2"><h4>Declara el uso</h4><p>Di qué herramientas usaste y para qué (buscar, redactar, traducir) en el método o la introducción.</p></div>
+        <div class="ci2"><h4>Cita las fuentes, no la IA</h4><p>El conocimiento se cita desde su origen real. La IA es el medio para llegar a la fuente, no la fuente.</p></div>
+        <div class="ci2"><h4>El trabajo refleja tu aprendizaje</h4><p>El principio ético central: lo que entregas debe demostrar conocimiento que tú adquiriste.</p></div>
+        <div class="ci2"><h4>Consulta la norma de tu facultad</h4><p>La regla la pone tu programa. Ante la duda, pregunta al docente antes de entregar.</p></div>
+      </div>
+      <div class="apa">
+        <div class="apa-h">Cómo citar una IA en APA 7 (guía oficial APA Style)</div>
+        <div class="apa-row"><span class="apa-tag">Referencia</span><code>OpenAI. (2025). <i>Título o tema del chat</i> [Modelo de lenguaje grande]. ChatGPT (versión del 14 mar 2025). https://chat.openai.com/</code></div>
+        <div class="apa-row"><span class="apa-tag">En el texto</span><code>(OpenAI, 2025)  ·  el autor es la empresa (OpenAI, Google), no “ChatGPT”.</code></div>
+        <div class="apa-note">En el cuerpo del trabajo describe cómo usaste la herramienta e incluye el prompt. Verifica siempre la guía vigente.  <a href="https://apastyle.apa.org/blog/how-to-cite-chatgpt" target="_blank" rel="noopener">apastyle.apa.org · How to cite ChatGPT</a></div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 6 · Cerrar",
+    html:`<div class="inner">
+      <div class="kicker">Paso 6 · Cerrar el trabajo</div>
+      <h2 class="title">Cómo se cierra<br>con autoría propia</h2>
+      <p class="lead">El cierre distingue un trabajo asistido por IA de uno hecho por IA. Trazabilidad, voz propia y una nota de transparencia.</p>
+      <div style="margin-top:12px">
+        <div class="steprow"><div class="sn">1</div><div class="sc"><h3>Audita las referencias una a una</h3><p>Verifica que cada cita existe: autor, año, DOI o enlace que abre. Elimina cualquier referencia que no puedas confirmar.</p></div></div>
+        <div class="steprow s2"><div class="sn">2</div><div class="sc"><h3>Relee buscando tu voz</h3><p>Si un párrafo no suena a ti o no sabrías defenderlo, reescríbelo. La coherencia argumental es la huella humana.</p></div></div>
+        <div class="steprow s3"><div class="sn">3</div><div class="sc"><h3>Redacta la nota de uso de IA</h3><p>Un párrafo breve: qué herramientas, en qué fases y qué verificaste tú. Honestidad que protege tu integridad.</p></div></div>
+        <div class="steprow s4"><div class="sn">4</div><div class="sc"><h3>Conserva el rastro</h3><p>Guarda prompts y fuentes clave. Si te preguntan cómo llegaste a algo, muestras el proceso. Eso es trazabilidad.</p></div></div>
+      </div>
+    </div>`
+  },
+  { nav:"Recursos",
+    html:`<div class="inner">
+      <div class="kicker teal">Caja de herramientas</div>
+      <h2 class="title">Herramientas, sin rodeos</h2>
+      <p class="lead">Para qué sirve, si es gratis o de pago, qué puedes y qué no, y para qué investigación conviene. Clic en el enlace para entrar.</p>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="res r1"><div class="rtop"></div><div class="rh"><h3>Consensus</h3><span class="price freemium">Freemium</span></div>
+          <div class="desc">Busca respuestas con base en papers científicos y resume el consenso de la evidencia.</div>
+          <ul><li class="yes">Respuestas ancladas a estudios reales</li><li class="yes">Resumen del “sí/no” de la evidencia</li><li class="no">No reemplaza leer el paper completo</li></ul>
+          <div class="use">Ideal para: arrancar un estado del arte sobre una pregunta concreta.</div>
+          <a class="link" href="https://consensus.app" target="_blank" rel="noopener">consensus.app</a></div>
+        <div class="res r2"><div class="rtop"></div><div class="rh"><h3>Elicit</h3><span class="price freemium">Freemium</span></div>
+          <div class="desc">Asistente de revisión de literatura: encuentra papers y los organiza en tablas comparables.</div>
+          <ul><li class="yes">Tablas de extracción (método, muestra, hallazgo)</li><li class="yes">Acelera revisiones sistemáticas</li><li class="no">Cobertura limitada fuera de lo científico</li></ul>
+          <div class="use">Ideal para: tesis donde comparas muchos estudios por variables.</div>
+          <a class="link" href="https://elicit.com" target="_blank" rel="noopener">elicit.com</a></div>
+        <div class="res r3"><div class="rtop"></div><div class="rh"><h3>Semantic Scholar</h3><span class="price free">Gratis</span></div>
+          <div class="desc">Buscador académico con IA (Allen Institute). Resúmenes TLDR, citas y trabajos influyentes.</div>
+          <ul><li class="yes">Gratuito y muy amplio</li><li class="yes">Resúmenes automáticos y grafo de citas</li><li class="no">No “razona” ni redacta por ti</li></ul>
+          <div class="use">Ideal para: base de cualquier búsqueda académica seria, sin costo.</div>
+          <a class="link" href="https://www.semanticscholar.org" target="_blank" rel="noopener">semanticscholar.org</a></div>
+        <div class="res r4"><div class="rtop"></div><div class="rh"><h3>Connected Papers</h3><span class="price freemium">Freemium</span></div>
+          <div class="desc">Mapa visual de un campo a partir de un paper semilla: ves vecinos y antecedentes.</div>
+          <ul><li class="yes">Visualiza cómo se conecta la literatura</li><li class="yes">Encuentra clásicos que se te escapan</li><li class="no">Límite de grafos gratis al mes</li></ul>
+          <div class="use">Ideal para: ubicarte rápido en un tema nuevo.</div>
+          <a class="link" href="https://www.connectedpapers.com" target="_blank" rel="noopener">connectedpapers.com</a></div>
+        <div class="res r5"><div class="rtop"></div><div class="rh"><h3>Research Rabbit</h3><span class="price free">Gratis</span></div>
+          <div class="desc">“Spotify de los papers”: recomienda trabajos relacionados y sigue líneas de autores.</div>
+          <ul><li class="yes">Descubrimiento continuo y colecciones</li><li class="yes">Sin costo</li><li class="no">Interfaz con curva de aprendizaje</li></ul>
+          <div class="use">Ideal para: seguir un tema en el tiempo y armar tu corpus.</div>
+          <a class="link" href="https://www.researchrabbit.ai" target="_blank" rel="noopener">researchrabbit.ai</a></div>
+        <div class="res r6"><div class="rtop"></div><div class="rh"><h3>Zotero</h3><span class="price free">Gratis</span></div>
+          <div class="desc">Gestor de referencias de código abierto. Captura fuentes y genera citas en APA, IEEE, etc.</div>
+          <ul><li class="yes">Citación y bibliografía automáticas</li><li class="yes">Organiza todo tu material</li><li class="no">No busca por ti: tú alimentas la base</li></ul>
+          <div class="use">Ideal para: el cierre, ordenar y citar sin errores.</div>
+          <a class="link" href="https://www.zotero.org" target="_blank" rel="noopener">zotero.org</a></div>
+      </div>
+    </div>`
+  },
+  { nav:"Recursos · Modelos LLM",
+    html:`<div class="inner">
+      <div class="kicker teal">Caja de herramientas</div>
+      <h2 class="title">Modelos para razonar y redactar</h2>
+      <p class="lead">Los LLM ordenan, resumen y redactan, pero no son fuentes. Úsalos para pensar mejor, no para inventar datos.</p>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="res r1"><div class="rtop"></div><div class="rh"><h3>Claude</h3><span class="price freemium">Freemium</span></div>
+          <div class="desc">De Anthropic, fuerte en textos largos, análisis de documentos y razonamiento.</div>
+          <ul><li class="yes">Lee y resume PDFs largos</li><li class="yes">Buen contraargumentador</li><li class="no">No es fuente: verifica todo dato</li></ul>
+          <div class="use">Ideal para: estructurar, resumir tus fuentes y revisar borradores.</div>
+          <a class="link" href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a></div>
+        <div class="res r2"><div class="rtop"></div><div class="rh"><h3>ChatGPT</h3><span class="price freemium">Freemium</span></div>
+          <div class="desc">De OpenAI, versátil para redacción, esquemas y exploración de ideas.</div>
+          <ul><li class="yes">Amplio ecosistema y búsqueda web</li><li class="yes">Bueno para lluvia de ideas y estructura</li><li class="no">Alucina citas: nunca las des por buenas</li></ul>
+          <div class="use">Ideal para: ordenar argumentos y mejorar redacción.</div>
+          <a class="link" href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com</a></div>
+        <div class="res r3"><div class="rtop"></div><div class="rh"><h3>NotebookLM</h3><span class="price free">Gratis</span></div>
+          <div class="desc">De Google: trabaja <b>solo</b> con las fuentes que tú subes, así reduce la invención de datos.</div>
+          <ul><li class="yes">Responde citando tus propios documentos</li><li class="yes">Ideal contra la alucinación</li><li class="no">No busca fuentes nuevas por ti</li></ul>
+          <div class="use">Ideal para: estudiar e interrogar tu corpus ya verificado.</div>
+          <a class="link" href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a></div>
+      </div>
+    </div>`
+  },
+  { nav:"Cierre",
+    html:`<div class="inner closing">
+      <div class="kicker">Para llevarse</div>
+      <div class="pull">La IA no nos exime de pensar.<br><span class="hl">Nos reta a pensar mejor.</span></div>
+      <div class="sub">La herramienta expande el alcance; el criterio define el rumbo.</div>
+      <div class="q">Última: ¿para qué NO la usarían nunca? Abramos el debate.</div>
+      <div class="tagline" style="margin-top:24px">Felix Enrique Parra Jiménez · Diseñador Gráfico · Especialista en Diseño y Creación con IA</div>
+    </div>`
+  }
+];
+
+const slidesEl=document.getElementById('slides'),seclist=document.getElementById('seclist'),progress=document.getElementById('progress');
+const curEl=document.getElementById('cur'),curtEl=document.getElementById('curt'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+const nav=document.getElementById('nav'),scrim=document.getElementById('scrim'),menutoggle=document.getElementById('menutoggle');
+let idx=0;
+slides.forEach((s,i)=>{
+  const d=document.createElement('section');d.className='slide';d.innerHTML=s.html;d.dataset.i=i;slidesEl.appendChild(d);
+  const li=document.createElement('li');const b=document.createElement('button');
+  b.innerHTML=`<span class="nm">${String(i+1).padStart(2,'0')}</span><span>${s.nav}</span>`;
+  b.addEventListener('click',()=>{go(i);closeNav();});li.appendChild(b);seclist.appendChild(li);
+});
+const slideEls=[...document.querySelectorAll('.slide')],navItems=[...seclist.children];
+function initPoll(slideEl,cfg){
+  const poll=slideEl.querySelector('[data-poll]');if(!poll)return;
+  const multi=poll.hasAttribute('data-multi');
+  const opts=[...poll.querySelectorAll('.opt')];
+  const react=poll.querySelector('.react');
+  let revealed=false;
+  function reveal(){
+    if(revealed)return;revealed=true;poll.classList.add('revealed');
+    opts.forEach((o,i)=>{
+      const pct=cfg.data[i]||0;
+      let bar=o.querySelector('.bar');if(!bar){bar=document.createElement('span');bar.className='bar';o.prepend(bar);}
+      requestAnimationFrame(()=>{bar.style.width=pct+'%';});
+      o.querySelector('.pct').textContent=pct+'%';
+    });
+    if(react)react.innerHTML=cfg.react;
+  }
+  opts.forEach(o=>{o.addEventListener('click',()=>{
+    if(multi){o.classList.toggle('sel');}else{opts.forEach(x=>x.classList.remove('sel'));o.classList.add('sel');}
+    reveal();
+  });});
+}
+slides.forEach((s,i)=>{ if(s.poll) initPoll(slideEls[i],s.poll); });
+function go(n){
+  idx=Math.max(0,Math.min(slides.length-1,n));
+  slideEls.forEach((el,i)=>el.classList.toggle('show',i===idx));
+  navItems.forEach((el,i)=>el.classList.toggle('active',i===idx));
+  curEl.textContent=String(idx+1).padStart(2,'0');
+  curtEl.textContent='· '+slides[idx].nav;
+  progress.style.width=((idx+1)/slides.length*100)+'%';
+  prevBtn.disabled=idx===0;nextBtn.disabled=idx===slides.length-1;
+  const a=navItems[idx];if(a)a.scrollIntoView({block:'nearest'});
+  slideEls[idx].scrollTop=0;
+  try{ history.replaceState(null,'',`#${idx+1}`); }catch(e){ /* file:// bloquea history; ignorar */ }
+}
+prevBtn.addEventListener('click',()=>go(idx-1));
+nextBtn.addEventListener('click',()=>go(idx+1));
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('.opt'))return;
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(idx+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(idx-1);
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+});
+function openNav(){nav.classList.add('open');scrim.classList.add('open');}
+function closeNav(){nav.classList.remove('open');scrim.classList.remove('open');}
+menutoggle.addEventListener('click',openNav);scrim.addEventListener('click',closeNav);
+let tx=0;
+slidesEl.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+slidesEl.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>70){dx<0?go(idx+1):go(idx-1);}},{passive:true});
+const start=parseInt((location.hash||'#1').slice(1),10);
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>
