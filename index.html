@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>IA con criterio</title>
+<title>IA con criterio · Cátedra</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
   :root{
@@ -105,6 +105,16 @@
   .promptbox .pb .tag{color:#fff;padding:1px 8px;border-radius:6px;font-size:11px;letter-spacing:.03em;font-weight:600}
   .tag.t1{background:var(--grape)}.tag.t2{background:var(--sky)}.tag.t3{background:var(--teal)}.tag.t4{background:var(--amber)}.tag.t5{background:var(--coral)}
   .promptbox .pb b{color:var(--ink)}
+
+  /* glosario: términos con definición */
+  .term{color:var(--grape);border-bottom:1.5px dotted var(--grape);cursor:help;font-weight:500;white-space:nowrap}
+  .term:hover{background:#f0eefb}
+  .glosspop{position:fixed;z-index:60;max-width:300px;background:var(--ink);color:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 18px 50px -16px rgba(15,15,30,.55);font-family:var(--sans);opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .16s,transform .16s,visibility .16s;pointer-events:none}
+  .glosspop.show{opacity:1;visibility:visible;transform:none}
+  .glosspop .gt{font-family:var(--display);font-weight:600;font-size:14px;margin-bottom:5px;color:#fff;letter-spacing:-.01em}
+  .glosspop .gd{font-size:12.5px;line-height:1.5;color:#cdd0e0}
+  .glosspop::after{content:"";position:absolute;left:var(--arrowx,24px);bottom:-7px;width:14px;height:14px;background:var(--ink);transform:rotate(45deg)}
+  .glosspop.below::after{bottom:auto;top:-7px}
   .poll{margin-top:22px;border:2px dashed var(--grape);border-radius:18px;padding:24px 26px;background:linear-gradient(135deg,#f6f3ff,#fff5f6)}
   .poll .q{font-family:var(--display);font-size:clamp(20px,2.4vw,29px);font-weight:600;line-height:1.18;letter-spacing:-.02em;margin-bottom:6px}
   .poll .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
@@ -163,6 +173,27 @@
   .closing .pull{font-family:var(--display);font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.06;letter-spacing:-.035em;max-width:940px}
   .banner{margin-top:22px;border-radius:14px;padding:16px 20px;background:linear-gradient(135deg,#f6f3ff,#fff5f6);border:1px solid #ece7ff;font-size:14px;color:var(--ink);line-height:1.55}
   .banner b{color:var(--grape-d)}
+  .problema{margin-top:20px;border:1px solid var(--line);border-left:5px solid var(--grape);border-radius:14px;padding:18px 22px;background:#fff}
+  .problema .pl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grape);font-weight:600}
+  .problema p{font-family:var(--display);font-size:clamp(17px,2vw,22px);font-weight:600;line-height:1.3;letter-spacing:-.01em;margin:7px 0 8px;color:var(--ink)}
+  .problema .pm{font-size:12.5px;color:var(--muted);font-style:italic}
+  .vs{border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:#fff}
+  .vs-bad{border-top:5px solid var(--coral)}
+  .vs-good{border-top:5px solid var(--teal)}
+  .vs-h{font-family:var(--display);font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:12px;letter-spacing:-.01em}
+  .vs-x{color:var(--coral);font-weight:700}.vs-c{color:var(--teal);font-weight:700}
+  .vs-q{font-family:var(--mono);font-size:12.5px;line-height:1.5;color:var(--ink);background:var(--g50,#f8f8f8);background:#f6f6f4;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+  .vs ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .vs ul li{font-size:12.5px;color:var(--muted);line-height:1.45;padding-left:16px;position:relative}
+  .vs ul li::before{content:"·";position:absolute;left:3px;color:var(--muted);font-weight:700}
+  .biblio{margin-top:18px;display:flex;flex-direction:column;gap:11px}
+  .biblio p{font-size:13px;line-height:1.5;color:var(--ink);padding-left:26px;text-indent:-26px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+  .biblio p:last-child{border-bottom:0}
+  .biblio i{color:var(--grape-d);font-style:italic}
+  .biblio a{color:var(--grape);text-decoration:none;font-weight:500}
+  .biblio a:hover{text-decoration:underline}
+  .credit-note{margin-top:16px;border-radius:14px;padding:15px 18px;background:linear-gradient(135deg,#f6f3ff,#fff5f6);border:1px solid #ece7ff;font-size:13px;line-height:1.55;color:var(--ink)}
+  .credit-note b{color:var(--grape-d)}
   .apa{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .apa-h{background:var(--ink);color:#fff;font-family:var(--display);font-weight:600;font-size:14px;padding:11px 18px;letter-spacing:-.01em}
   .apa-row{display:flex;gap:14px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid var(--line)}
@@ -294,10 +325,27 @@ const slides = [
       <h2 class="title">Primero el contexto,<br>después la IA</h2>
       <p class="lead">No se trata solo de tener una pregunta. Se trata de darle a la IA el contexto completo de tu investigación: de qué va, para quién, con qué reglas. Eso es 100% humano y no se delega.</p>
       <div style="margin-top:14px">
-        <div class="steprow"><div class="sn">a</div><div class="sc"><h3>Sitúa tu investigación</h3><p>Tema, disciplina, nivel (pregrado, tesis), el problema que abordas y por qué importa. La IA no adivina tu intención: tú se la das.</p></div></div>
+        <div class="steprow"><div class="sn">a</div><div class="sc"><h3>Sitúa tu investigación</h3><p>Tema, disciplina, nivel, el problema que abordas y por qué importa. La IA no adivina tu intención: tú se la das.</p></div></div>
         <div class="steprow s2"><div class="sn">b</div><div class="sc"><h3>Decide qué necesitas en cada fase</h3><p>Mapear el campo, antecedentes, definiciones, contraste de posturas, datos. Cada necesidad usa una herramienta distinta, no todo es para el mismo chatbot.</p></div></div>
         <div class="steprow s3"><div class="sn">c</div><div class="sc"><h3>Fija tus criterios de calidad</h3><p>Qué fuentes aceptas (revisadas por pares, oficiales), idioma y normas de citación. La IA se ajusta a tu estándar, no al revés.</p><div class="meta">Regla de oro: si no puedes explicar por qué algo entra en tu trabajo, no entra.</div></div></div>
       </div>
+    </div>`
+  },
+  { nav:"Ejemplo · 3 IAs",
+    html:`<div class="inner">
+      <div class="kicker teal">Un caso real, tres herramientas</div>
+      <h2 class="title">El mismo problema<br>en tres IAs distintas</h2>
+      <div class="problema">
+        <span class="pl">Problema de investigación</span>
+        <p>¿Cómo se asocia la adopción de la automatización y la <span data-term="ia">IA</span> en distintos sectores productivos con la transformación del empleo, según el nivel educativo y la edad de los trabajadores?</p>
+        <span class="pm">Enfoque observacional, basado en encuestas y datos laborales.</span>
+      </div>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card c-grape"><div class="topbar"></div><div class="ci">Perplexity · buscar evidencia</div><h3>Reúne datos y fuentes</h3><p>“Dame estudios y estadísticas recientes (2020 a 2026) sobre automatización y empleo por sector, con la fuente citada de cada dato.”</p></div>
+        <div class="card c-sky"><div class="topbar"></div><div class="ci">Claude · estructurar</div><h3>Arma el marco y el instrumento</h3><p>“Con este problema, propón el marco teórico y las variables y dimensiones de una encuesta para medir esa relación.”</p></div>
+        <div class="card c-coral"><div class="topbar"></div><div class="ci">Gemini · contrastar</div><h3>Compara enfoques</h3><p>“Contrasta dos enfoques metodológicos para abordar este problema y redacta dos hipótesis alternativas.”</p></div>
+      </div>
+      <div class="banner" style="margin-top:16px"><b>La clave:</b> cada <span data-term="modelo">modelo</span> hace una parte. Tú reúnes, contrastas y decides qué entra en tu investigación.</div>
     </div>`
   },
   { nav:"Paso 2 · Qué IA",
@@ -322,11 +370,38 @@ const slides = [
       <div class="promptbox">
         <div class="ph"><span class="dots"><i></i><i></i><i></i></span> Ejemplo · prompt para un estado del arte</div>
         <div class="pb">
-          <span class="seg"><span class="tag t1">Rol</span> <b>Actúa como asistente de investigación en diseño.</b></span>
-          <span class="seg"><span class="tag t2">Contexto</span> Investigo la autoría en diseño editorial asistido por IA, nivel universitario, normas APA 7.</span>
-          <span class="seg"><span class="tag t3">Tarea</span> Identifica 5 debates abiertos sobre el tema en literatura 2022–2026.</span>
+          <span class="seg"><span class="tag t1">Rol</span> <b>Actúa como asistente de investigación en estudios laborales.</b></span>
+          <span class="seg"><span class="tag t2">Contexto</span> Investigo la relación entre automatización e <span data-term="ia">IA</span> y la transformación del empleo, nivel universitario, normas APA 7.</span>
+          <span class="seg"><span class="tag t3">Tarea</span> Identifica 5 debates abiertos sobre el tema en literatura 2020 a 2026.</span>
           <span class="seg"><span class="tag t4">Formato</span> Tabla: debate · postura A · postura B · autor representativo.</span>
           <span class="seg"><span class="tag t5">Límite</span> Si no tienes una fuente real, dilo. No inventes citas ni DOI.</span>
+        </div>
+      </div>
+    </div>`
+  },
+  { nav:"Paso 3 · Éxito vs fracaso",
+    html:`<div class="inner">
+      <div class="kicker">Paso 3 · Aprende del contraste</div>
+      <h2 class="title">Un prompt que falla<br>y uno que funciona</h2>
+      <p class="lead">El mismo objetivo, dos resultados muy distintos. La diferencia no es la IA: es cómo le pides.</p>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="vs vs-bad">
+          <div class="vs-h"><span class="vs-x">✕</span> Prompt que fracasa</div>
+          <div class="vs-q">“Hazme un trabajo sobre la IA y el empleo.”</div>
+          <ul>
+            <li>Sin rol, contexto ni formato: respuesta genérica.</li>
+            <li>No pide fuentes: invita a la <span data-term="alucinacion">alucinación</span>.</li>
+            <li>Pide el trabajo entero: te vuelve copista, no autor.</li>
+          </ul>
+        </div>
+        <div class="vs vs-good">
+          <div class="vs-h"><span class="vs-c">✓</span> Prompt que funciona</div>
+          <div class="vs-q">“Actúa como asistente de investigación. Para el problema [X], lista 5 hallazgos clave de literatura 2020 a 2026, con la fuente de cada uno. Si no tienes fuente real, dilo.”</div>
+          <ul>
+            <li>Da rol y contexto: respuesta enfocada.</li>
+            <li>Exige fuentes y admite los vacíos.</li>
+            <li>Pide insumos, no el trabajo: tú sigues al mando.</li>
+          </ul>
         </div>
       </div>
     </div>`
@@ -494,8 +569,120 @@ const slides = [
       <div class="q">Última: ¿para qué NO la usarían nunca? Abramos el debate.</div>
       <div class="tagline" style="margin-top:24px">Felix Enrique Parra Jiménez · Diseñador Gráfico · Especialista en Diseño y Creación con IA</div>
     </div>`
+  },
+  { nav:"Bibliografía",
+    html:`<div class="inner">
+      <div class="kicker">Fuentes</div>
+      <h2 class="title">Bibliografía y créditos</h2>
+      <p class="lead">Fuentes consultadas para esta presentación, en normas APA 7. Los enlaces abren la fuente original.</p>
+      <div class="biblio">
+        <p>Anthropic. (2026). <i>Claude Opus 4.8</i> [<span data-term="modelo">Modelo de lenguaje grande</span>]. <a href="https://claude.ai" target="_blank" rel="noopener">https://claude.ai</a></p>
+        <p>Anthropic. (2026). <i>Claude Fable 5 and Mythos 5</i> [Anuncio]. <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank" rel="noopener">anthropic.com/news</a></p>
+        <p>Freeman, J. (2025). <i>Student Generative AI Survey 2025</i>. Higher Education Policy Institute (<span data-term="hepi">HEPI</span>) y Kortext. <a href="https://www.hepi.ac.uk/reports/student-generative-ai-survey-2025/" target="_blank" rel="noopener">hepi.ac.uk</a></p>
+        <p>Live Science. (2026). <i>AI agent deletes company database in 9 seconds, then confesses</i>. <a href="https://www.livescience.com/technology/artificial-intelligence" target="_blank" rel="noopener">livescience.com</a></p>
+        <p>Tom's Hardware. (2026). <i>Claude-powered AI coding agent deletes entire company database</i>. <a href="https://www.tomshardware.com" target="_blank" rel="noopener">tomshardware.com</a></p>
+        <p>McAdoo, T. (2025). <i>How to cite ChatGPT</i> y <i>Citing generative AI in APA Style</i>. APA Style. <a href="https://apastyle.apa.org/blog/how-to-cite-chatgpt" target="_blank" rel="noopener">apastyle.apa.org</a></p>
+      </div>
+      <div class="credit-note"><b>Nota de uso de IA:</b> usé <span data-term="opus">Claude Opus</span> (Anthropic, 2026), una herramienta de <span data-term="ia-generativa">IA generativa</span>, para organizar y estructurar la información de esta presentación. La selección de fuentes, la verificación de datos y las decisiones finales son propias.</div>
+    </div>`
   }
 ];
+
+/* ===== GLOSARIO: definiciones fáciles ===== */
+const GLOSARIO = {
+  "ia": {t:"IA (Inteligencia Artificial)", d:"Tecnología que hace que una máquina realice tareas que asociamos con la inteligencia humana, como entender lenguaje, reconocer imágenes o redactar texto."},
+  "ia-generativa": {t:"IA generativa", d:"Tipo de IA que crea contenido nuevo (texto, imágenes, audio) a partir de lo que aprendió. ChatGPT y Claude son ejemplos."},
+  "modelo": {t:"Modelo de IA", d:"El “cerebro” entrenado que produce las respuestas. Cada herramienta usa uno o varios modelos con distintas capacidades."},
+  "llm": {t:"LLM (Modelo de Lenguaje Grande)", d:"Del inglés Large Language Model. Es un modelo entrenado con enormes cantidades de texto para entender y generar lenguaje. Predice la palabra más probable, no “sabe” la verdad."},
+  "anthropic": {t:"Anthropic", d:"Empresa de inteligencia artificial creadora de Claude, enfocada en hacer IA segura y confiable."},
+  "openai": {t:"OpenAI", d:"Empresa de inteligencia artificial creadora de ChatGPT y del modelo GPT."},
+  "claude": {t:"Claude", d:"Asistente de IA creado por Anthropic, fuerte en textos largos, análisis de documentos y razonamiento."},
+  "opus": {t:"Claude Opus", d:"La familia de modelos más potentes de Claude (Anthropic), pensada para tareas complejas de razonamiento y redacción."},
+  "chatgpt": {t:"ChatGPT", d:"Asistente de IA creado por OpenAI, muy usado para redactar, resumir y explorar ideas."},
+  "gemini": {t:"Gemini", d:"Modelo de IA de Google, capaz de trabajar con texto, imágenes y otros formatos."},
+  "perplexity": {t:"Perplexity", d:"Buscador con IA que responde preguntas y entrega las fuentes de donde sacó la información."},
+  "alucinacion": {t:"Alucinación", d:"Cuando una IA inventa información que suena convincente pero es falsa, como citas o datos que no existen. Por eso hay que verificar siempre."},
+  "prompt": {t:"Prompt", d:"La instrucción o pregunta que le das a la IA. Mientras más claro y completo, mejor la respuesta."},
+  "token": {t:"Token", d:"La unidad mínima de texto que procesa un modelo (una palabra o parte de ella). Los modelos tienen un límite de tokens por conversación."},
+  "hepi": {t:"HEPI", d:"Higher Education Policy Institute, instituto británico que investiga políticas de educación superior."},
+  "gan": {t:"GAN (Red Generativa Antagónica)", d:"Técnica donde dos IA compiten entre sí: una crea contenido y otra intenta detectar si es falso. Así mejoran rápido. Base de los deepfakes."}
+};
+/* términos que se detectan automáticamente en el texto (además de los data-term explícitos) */
+const AUTO_TERMS = [
+  ["Anthropic","anthropic"],["OpenAI","openai"],["ChatGPT","chatgpt"],["Gemini","gemini"],
+  ["Perplexity","perplexity"],["NotebookLM","gemini"],["LLM","llm"],["Claude Opus","opus"],["Claude","claude"],
+  ["alucina","alucinacion"],["alucinación","alucinacion"],["prompt","prompt"]
+];
+
+let glossPop=null;
+function ensurePop(){
+  if(glossPop) return glossPop;
+  glossPop=document.createElement('div');
+  glossPop.className='glosspop';
+  glossPop.innerHTML='<div class="gt"></div><div class="gd"></div>';
+  document.body.appendChild(glossPop);
+  return glossPop;
+}
+function showGloss(el){
+  const key=el.getAttribute('data-term');
+  const item=GLOSARIO[key]; if(!item) return;
+  const pop=ensurePop();
+  pop.querySelector('.gt').textContent=item.t;
+  pop.querySelector('.gd').textContent=item.d;
+  pop.classList.add('show');
+  const r=el.getBoundingClientRect();
+  const pw=Math.min(300, window.innerWidth-24);
+  pop.style.maxWidth=pw+'px';
+  let left=r.left+r.width/2-pw/2;
+  left=Math.max(12, Math.min(left, window.innerWidth-pw-12));
+  pop.style.left=left+'px';
+  const ph=pop.offsetHeight;
+  let top=r.top-ph-12; let below=false;
+  if(top<12){ top=r.bottom+12; below=true; }
+  pop.style.top=top+'px';
+  pop.classList.toggle('below',below);
+  const arrowx=r.left+r.width/2-left-7;
+  pop.style.setProperty('--arrowx', Math.max(10,Math.min(arrowx,pw-20))+'px');
+}
+function hideGloss(){ if(glossPop) glossPop.classList.remove('show'); }
+
+function wrapAutoTerms(root){
+  const skip=new Set(['A','CODE','SCRIPT','STYLE','BUTTON']);
+  const walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(n){
+      if(!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      let p=n.parentElement;
+      while(p && p!==root){ if(skip.has(p.tagName)||p.classList.contains('term')||p.hasAttribute('data-term')) return NodeFilter.FILTER_REJECT; p=p.parentElement; }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets=[]; let node;
+  while(node=walker.nextNode()) targets.push(node);
+  targets.forEach(textNode=>{
+    let txt=textNode.nodeValue, html=null;
+    for(const [word,key] of AUTO_TERMS){
+      const re=new RegExp('(?<![\\\\wáéíóúñ])('+word.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')+')(?![\\\\wáéíóúñ])','');
+      if(re.test(txt)){
+        html=(html||txt).replace(re,'<span class="term" data-term="'+key+'">$1</span>');
+      }
+    }
+    if(html && html!==txt){
+      const span=document.createElement('span');
+      span.innerHTML=html;
+      textNode.parentNode.replaceChild(span,textNode);
+    }
+  });
+}
+function activateTerms(root){
+  root.querySelectorAll('[data-term]').forEach(el=>{
+    if(!el.classList.contains('term')) el.classList.add('term');
+    el.addEventListener('mouseenter',()=>showGloss(el));
+    el.addEventListener('mouseleave',hideGloss);
+    el.addEventListener('click',(e)=>{e.stopPropagation();showGloss(el);});
+  });
+}
+document.addEventListener('click',hideGloss);
+window.addEventListener('resize',hideGloss);
 
 const slidesEl=document.getElementById('slides'),seclist=document.getElementById('seclist'),progress=document.getElementById('progress');
 const curEl=document.getElementById('cur'),curtEl=document.getElementById('curt'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
@@ -503,6 +690,7 @@ const nav=document.getElementById('nav'),scrim=document.getElementById('scrim'),
 let idx=0;
 slides.forEach((s,i)=>{
   const d=document.createElement('section');d.className='slide';d.innerHTML=s.html;d.dataset.i=i;slidesEl.appendChild(d);
+  wrapAutoTerms(d); activateTerms(d);
   const li=document.createElement('li');const b=document.createElement('button');
   b.innerHTML=`<span class="nm">${String(i+1).padStart(2,'0')}</span><span>${s.nav}</span>`;
   b.addEventListener('click',()=>{go(i);closeNav();});li.appendChild(b);seclist.appendChild(li);
